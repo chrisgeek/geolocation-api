@@ -34,6 +34,7 @@ gem 'bootsnap', require: false
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 # gem 'rack-cors'
+gem 'alba'
 
 group :development do
   gem 'error_highlight', '>= 0.4.0', platforms: [:ruby]

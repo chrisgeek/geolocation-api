@@ -6,7 +6,7 @@ module Api
 
       def show
         if @geolocation
-          success_response(@geolocation)
+          success_response(@geolocation, GeolocationSerializer)
         else
           failure_response(not_found_message, :not_found)
         end

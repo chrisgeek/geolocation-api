@@ -1,4 +1,3 @@
-require 'timeout'
 class RetrieveAndSaveIp
   attr_reader :address, :address_type
 
@@ -28,18 +27,18 @@ class RetrieveAndSaveIp
     end
   end
 
+  private
+
   def parse_json(data)
     JSON.parse(data)
   end
-
-  private
 
   def retrieve_geolocation_data
     GeolocationProvider::Ipstack.make_request(ip_address, HttpProvider::Factory.provider(:net_http))
   end
 
   def ip_address
-    address_type == :url ? UrlToIpConverter.call(address) : address
+    address_type == :url ? UrlFormatter.extract_host(address) : address
   end
 
   def create_geolocation(geolocation_data)

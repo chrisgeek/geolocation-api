@@ -9,8 +9,8 @@ class ApplicationController < ActionController::API
     render json: { error:  message }, status: status
   end
 
-  def success_response(object, res_status = :ok)
-    render json: object, status: res_status
+  def success_response(data, klass, res_status = :ok)
+    render json: klass.new(data).serialize, status: res_status
   end
 
   private
