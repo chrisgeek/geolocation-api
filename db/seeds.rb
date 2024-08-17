@@ -8,50 +8,76 @@
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
 # db/seeds.rb
+
 Geolocation.create!([
   {
-    identifier: '192.168.0.1',
-    identifier_type: 'ip',
-    country: 'United States',
-    region: 'California',
+    ip: '134.201.250.155',
+    ip_type: 'ipv4',
+    continent_code: 'NA',
+    continent_name: 'North America',
+    country_name: 'United States',
+    country_code: 'US',
+    region_code: 'CA',
+    region_name: 'California',
     city: 'Los Angeles',
-    latitude: 34.052235,
-    longitude: -118.243683
+    zip: '90001',
+    latitude: 34.05223400000000,
+    longitude: -118.24368500000000
   },
   {
-    identifier: 'example.com',
-    identifier_type: 'url',
-    country: 'United States',
-    region: 'New York',
-    city: 'New York',
-    latitude: 40.712776,
-    longitude: -74.005974
+    ip: '203.0.113.0',
+    ip_type: 'ipv4',
+    continent_code: 'AS',
+    continent_name: 'Asia',
+    country_name: 'Japan',
+    country_code: 'JP',
+    region_code: '13',
+    region_name: 'Tokyo',
+    city: 'Tokyo',
+    zip: '100-0001',
+    latitude: 35.68948750000000,
+    longitude: 139.69170640000000
   },
   {
-    identifier: '172.16.254.1',
-    identifier_type: 'ip',
-    country: 'Canada',
-    region: 'Ontario',
-    city: 'Toronto',
-    latitude: 43.651070,
-    longitude: -79.347015
+    ip: '192.0.2.1',
+    ip_type: 'ipv4',
+    continent_code: 'EU',
+    continent_name: 'Europe',
+    country_name: 'Germany',
+    country_code: 'DE',
+    region_code: 'BE',
+    region_name: 'Berlin',
+    city: 'Berlin',
+    zip: '10115',
+    latitude: 52.52000659999999,
+    longitude: 13.40495400000000
   },
   {
-    identifier: 'mywebsite.org',
-    identifier_type: 'url',
-    country: 'United Kingdom',
-    region: 'England',
-    city: 'London',
-    latitude: 51.507351,
-    longitude: -0.127758
-  },
-  {
-    identifier: '10.0.0.1',
-    identifier_type: 'ip',
-    country: 'Australia',
-    region: 'New South Wales',
+    ip: '198.51.100.2',
+    ip_type: 'ipv4',
+    continent_code: 'OC',
+    continent_name: 'Oceania',
+    country_name: 'Australia',
+    country_code: 'AU',
+    region_code: 'NSW',
+    region_name: 'New South Wales',
     city: 'Sydney',
-    latitude: -33.868820,
-    longitude: 151.209290
+    zip: '2000',
+    latitude: -33.86882000000000,
+    longitude: 151.20929000000000
+  },
+  {
+    ip: '192.0.2.123',
+    ip_type: 'ipv4',
+    continent_code: 'SA',
+    continent_name: 'South America',
+    country_name: 'Brazil',
+    country_code: 'BR',
+    region_code: 'SP',
+    region_name: 'São Paulo',
+    city: 'São Paulo',
+    zip: '01000-000',
+    latitude: -23.55052000000000,
+    longitude: -46.63330800000000
   }
 ])

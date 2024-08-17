@@ -15,16 +15,21 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_15_000416) do
   enable_extension "plpgsql"
 
   create_table "geolocations", force: :cascade do |t|
-    t.string "identifier"
-    t.string "identifier_type"
-    t.string "country"
-    t.string "region"
+    t.string "ip"
+    t.string "ip_type"
+    t.string "continent_code"
+    t.string "continent_name"
+    t.string "country_name"
+    t.string "country_code"
+    t.string "region_code"
+    t.string "region_name"
     t.string "city"
-    t.decimal "latitude", precision: 10, scale: 6
-    t.decimal "longitude", precision: 10, scale: 6
+    t.string "zip"
+    t.decimal "latitude", precision: 16, scale: 14
+    t.decimal "longitude", precision: 17, scale: 14
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["identifier"], name: "index_geolocations_on_identifier", unique: true
+    t.index ["ip"], name: "index_geolocations_on_ip", unique: true
   end
 
 end
