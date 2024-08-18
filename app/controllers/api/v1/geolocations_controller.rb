@@ -2,7 +2,6 @@ module Api
   module V1
     class GeolocationsController < ApplicationController
       before_action :set_geolocation, only: %i[show create destroy]
-      before_action :set_ip
 
       def show
         if @geolocation
@@ -13,17 +12,10 @@ module Api
       end
 
       def create
-        return render json: { info: "Geolocation already exists #{@geolocation.ip}" } unless @geolocation.nil?
-        return render json: { error: 'Invalid input' }, status: :unprocessable_entity if @ip.nil?
+        return record_exists(Geolocation, params[:geolocation][:ip]) unless @geolocation.nil?
 
-        address_type = AddressChecker.call(@ip)
-
-        if address_type == :invalid_address
-          render json: { error: "Invalid Address #{@ip}" }, status: :unprocessable_entity
-        else
-          res = RetrieveAndSaveIp.call(@ip, address_type)
-          render json: { output: res }
-        end
+        res = RetrieveAndSaveIp.call(@ip, address_type)
+        render json: { output: res }
       end
 
       def destroy
@@ -38,15 +30,20 @@ module Api
       private
 
       def set_geolocation
-        @geolocation = Geolocation.find_by(ip: params[:geolocation][:ip])
+        @ip = formatted_address(params[:geolocation][:ip]&.strip)
+        @geolocation = Geolocation.find_by(ip: @ip)
       end
 
-      def set_ip
-        @ip = params[:geolocation][:ip]&.strip
-      end
-
-      def not_found_message
-        'Geolocation Not found'
+      def formatted_address(ip_or_url)
+        type = AddressChecker.call(ip_or_url)
+        if type == :url
+          url_host = UrlFormatter.extract_host(ip_or_url)
+          UrlFormatter.convert_to_ip(url_host)
+        elsif type == :invalid_address
+          raise ErrorHandler::InvalidInput, ip_or_url
+        else
+          ip_or_url
+        end
       end
     end
   end

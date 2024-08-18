@@ -9,7 +9,17 @@ module ApiResponse
     render json: serializer.new(data).serialize, status: res_status
   end
 
-  private
+  def not_found_message
+    'Geolocation Not found'
+  end
+
+  def record_exists(klass, record_info)
+    render json: { info: "#{klass} already exists for #{record_info}" }
+  end
+
+  def invalid_input(exception)
+    render json: { error: "Invalid Input #{exception.message}" }, status: :unprocessable_entity
+  end
 
   def socket_error(exception)
     render json: { error: " #{exception.message} Request Timeout" }, status: 408
