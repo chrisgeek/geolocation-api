@@ -54,8 +54,8 @@ RSpec.describe RetrieveAndSaveIp do
 
         geolocation = Geolocation.last
         expect(geolocation.ip).to eq(ip_address)
-        expect(geolocation.latitude).to be_within(0.0001).of(37.4224)
-        expect(geolocation.longitude).to be_within(0.0001).of(-122.0842)
+        expect(geolocation.latitude).to be_within(0.0001).of(37.4224) # used within to avoid precision mismatch
+        expect(geolocation.longitude).to be_within(0.0001).of(-122.0842) # round(4) can also be used, take note!!
       end
     end
 
