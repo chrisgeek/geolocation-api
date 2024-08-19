@@ -43,6 +43,7 @@ end
 
 group :development, :test do
   gem 'debug', platforms: %i[mri mswin mswin64 mingw x64_mingw]
+  gem 'dotenv'
   gem 'faker'
   gem 'rspec-rails', '~> 6.1.0'
 end

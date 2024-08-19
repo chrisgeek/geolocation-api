@@ -14,7 +14,7 @@ module ApiResponse
   end
 
   def record_exists(klass, record_info)
-    render json: { info: "#{klass} already exists for #{record_info}" }
+    render json: { error: "#{klass} already exists for #{record_info}" }, status: :unprocessable_entity
   end
 
   def invalid_input(exception)
@@ -22,7 +22,7 @@ module ApiResponse
   end
 
   def socket_error(exception)
-    render json: { error: " #{exception.message} Request Timeout" }, status: 408
+    render json: { error: exception.message }, status: 408
   end
 
   def parser_error(exception)
@@ -34,10 +34,14 @@ module ApiResponse
   end
 
   def timeout_error(exception)
-    render json: { error: "#{exception.message} Request Timeout" }
+    render json: { error: exception.message }
   end
 
   def record_not_found(exception)
+    render json: { error: exception.message }, status: :not_found
+  end
+
+  def unexpected_error(exception)
     render json: { error: exception.message }, status: :not_found
   end
 end

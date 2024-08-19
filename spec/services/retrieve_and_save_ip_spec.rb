@@ -7,6 +7,15 @@ RSpec.describe RetrieveAndSaveIp do
   let(:address_type_ip) { :ip }
   let(:address_type_url) { :url }
   let(:retrieve_and_save_ip) { instance_double(RetrieveAndSaveIp) }
+  let(:success_response) do
+    response = Net::HTTPOK.new('1.1', '200', 'OK')
+    allow(response).to receive(:body).and_return(geolocation_data.to_json)
+    response
+  end
+
+  let(:server_error) do
+    Net::HTTPServerError.new('1.1', '500', 'Internal Server Error')
+  end
 
   describe '#call' do
     it 'creates a new instance and calls send_request' do
@@ -35,14 +44,6 @@ RSpec.describe RetrieveAndSaveIp do
       }
     end
 
-    let(:success_response) do
-      instance_double(Net::HTTPResponse, code: '200', body: geolocation_data.to_json)
-    end
-
-    let(:error_response) do
-      instance_double(Net::HTTPResponse, code: '401', body: { 'info' => 'Invalid API key', 'code' => 401 }.to_json)
-    end
-
     before do
       allow(GeolocationProvider::Ipstack).to receive(:make_request).and_return(success_response)
     end
@@ -61,28 +62,15 @@ RSpec.describe RetrieveAndSaveIp do
 
     context 'when the request fails' do
       before do
-        allow(GeolocationProvider::Ipstack).to receive(:make_request).and_return(error_response)
+        allow(GeolocationProvider::Ipstack).to receive(:make_request).and_return(server_error)
       end
 
       it 'returns an error message' do
         instance = RetrieveAndSaveIp.new(ip_address, address_type_ip)
         result = instance.send_request
 
-        expect(result).to eq('error : Invalid API key code: 401')
-      end
-    end
-
-    context 'when the address is a URL' do
-      let(:extracted_ip) { '93.184.216.34' }
-
-      before do
-        allow(UrlFormatter).to receive(:extract_host).with(url).and_return(extracted_ip)
-      end
-
-      it 'extracts the host from the URL' do
-        instance = RetrieveAndSaveIp.new(url, address_type_url)
-        expect(GeolocationProvider::Ipstack).to receive(:make_request).with(extracted_ip, anything)
-        instance.send_request
+        # debugger
+        expect(result).to eq('error: Internal Server Error, code: 500')
       end
     end
   end

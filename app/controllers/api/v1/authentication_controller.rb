@@ -4,7 +4,6 @@ module Api
       skip_before_action :authenticate_user
 
       def login
-        # debugger
         @user = User.find_by(email: params[:user][:email])
         if @user&.authenticate(params[:user][:password])
           token = encode({ user_id: @user.id })

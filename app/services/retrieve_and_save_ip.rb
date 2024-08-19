@@ -11,19 +11,15 @@ class RetrieveAndSaveIp
   end
 
   def send_request
-    # failure_payload = {
-    #   'info' => 'Invalid API key',
-    #   'code' => 401
-    # }.to_json
-
-    # # Simulate a failed response
-    # res = OpenStruct.new(code: '401', body: failure_payload)
     res = retrieve_geolocation_data
-    parsed_body = parse_json(res.body)
-    if res.code == '200'
-      create_geolocation(parsed_body)
+
+    case res
+    when Net::HTTPOK
+      create_geolocation(parse_json(res.body))
+    when Net::HTTPClientError, Net::HTTPServerError
+      "error: #{res.message}, code: #{res.code}"
     else
-      "error : #{parsed_body['info']} code: #{parsed_body['code']}"
+      raise ErrorHandler::UnexpectedError, res
     end
   end
 
@@ -34,11 +30,7 @@ class RetrieveAndSaveIp
   end
 
   def retrieve_geolocation_data
-    GeolocationProvider::Ipstack.make_request(ip_address, HttpProvider::Factory.provider(:net_http))
-  end
-
-  def ip_address
-    address_type == :url ? UrlFormatter.extract_host(address) : address
+    GeolocationProvider::Ipstack.make_request(address, HttpProvider::Factory.provider(:net_http))
   end
 
   def create_geolocation(geolocation_data)

@@ -12,9 +12,9 @@ module Api
       end
 
       def create
-        return record_exists(Geolocation, params[:geolocation][:ip]) unless @geolocation.nil?
+        return record_exists(Geolocation, geolocation_params[:ip]) unless @geolocation.nil?
 
-        res = RetrieveAndSaveIp.call(@ip, address_type)
+        res = RetrieveAndSaveIp.call(@ip, @ip_type)
         render json: { output: res }
       end
 
@@ -29,8 +29,14 @@ module Api
 
       private
 
+      def geolocation_params
+        params.require(:geolocation).permit(:ip)
+      end
+
       def set_geolocation
-        @ip = formatted_address(params[:geolocation][:ip]&.strip)
+        ip = geolocation_params[:ip]&.strip
+        @ip = formatted_address(ip)
+        @ip_type = AddressChecker.call(ip)
         @geolocation = Geolocation.find_by(ip: @ip)
       end
 

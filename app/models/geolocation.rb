@@ -14,7 +14,7 @@ class Geolocation < ApplicationRecord
   validates :latitude, presence: true, numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 }
   validates :longitude, presence: true, numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 }
 
-  enum :ip_type, { ipv4: 'ipv4', ipv6: 'ipv6' }, validate: true
+  enum :ip_type, { 'ipv4': 'ipv4', 'ipv6': 'ipv6' }, validate: true
 
   def self.field_types
     (['type', *attribute_names] - %w[created_at updated_at id ip_type]).join(',')
