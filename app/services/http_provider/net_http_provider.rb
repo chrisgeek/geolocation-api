@@ -17,6 +17,18 @@ module HttpProvider
       setup.request(req)
     end
 
+    def self.success
+      Net::HTTPOK
+    end
+
+    def self.server_error
+      Net::HTTPServerError
+    end
+
+    def self.client_error
+      Net::HTTPClientError
+    end
+
     private
 
     def setup

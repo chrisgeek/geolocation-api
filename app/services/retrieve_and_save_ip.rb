@@ -1,22 +1,23 @@
 class RetrieveAndSaveIp
-  attr_reader :address, :address_type
+  attr_reader :address, :address_type, :http_provider
 
-  def self.call(address, address_type)
-    new(address, address_type).send_request
+  def self.call(address, address_type, http_provider)
+    new(address, address_type, http_provider).send_request
   end
 
-  def initialize(address, address_type)
+  def initialize(address, address_type, http_provider)
     @address = address
     @address_type = address_type
+    @http_provider = http_provider
   end
 
   def send_request
     res = retrieve_geolocation_data
 
     case res
-    when Net::HTTPOK
+    when http_provider.success
       create_geolocation(parse_json(res.body))
-    when Net::HTTPClientError, Net::HTTPServerError
+    when http_provider.server_error
       "error: #{res.message}, code: #{res.code}"
     else
       raise ErrorHandler::UnexpectedError, res
@@ -30,7 +31,7 @@ class RetrieveAndSaveIp
   end
 
   def retrieve_geolocation_data
-    GeolocationProvider::Ipstack.make_request(address, HttpProvider::Factory.provider(:net_http))
+    GeolocationProvider::Ipstack.make_request(address, http_provider)
   end
 
   def create_geolocation(geolocation_data)

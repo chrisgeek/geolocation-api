@@ -7,6 +7,7 @@ RSpec.describe RetrieveAndSaveIp do
   let(:address_type_ip) { :ip }
   let(:address_type_url) { :url }
   let(:retrieve_and_save_ip) { instance_double(RetrieveAndSaveIp) }
+  let(:http_provider) { class_double(HttpProvider::NetHttpProvider) }
   let(:success_response) do
     response = Net::HTTPOK.new('1.1', '200', 'OK')
     allow(response).to receive(:body).and_return(geolocation_data.to_json)
@@ -19,10 +20,10 @@ RSpec.describe RetrieveAndSaveIp do
 
   describe '#call' do
     it 'creates a new instance and calls send_request' do
-      expect(RetrieveAndSaveIp).to receive(:new).with(ip_address, address_type_ip).and_return(retrieve_and_save_ip)
+      expect(RetrieveAndSaveIp).to receive(:new).with(ip_address, address_type_ip, http_provider).and_return(retrieve_and_save_ip)
       expect(retrieve_and_save_ip).to receive(:send_request)
 
-      RetrieveAndSaveIp.call(ip_address, address_type_ip)
+      RetrieveAndSaveIp.call(ip_address, address_type_ip, http_provider)
     end
   end
 
@@ -46,11 +47,13 @@ RSpec.describe RetrieveAndSaveIp do
 
     before do
       allow(GeolocationProvider::Ipstack).to receive(:make_request).and_return(success_response)
+      allow(http_provider).to receive(:success).and_return(Net::HTTPOK)
+      allow(http_provider).to receive(:server_error).and_return(Net::HTTPServerError)
     end
 
     context 'when the request is successful' do
       it 'creates a new Geolocation record' do
-        instance = RetrieveAndSaveIp.new(ip_address, address_type_ip)
+        instance = RetrieveAndSaveIp.new(ip_address, address_type_ip, http_provider)
         expect { instance.send_request }.to change(Geolocation, :count).by(1)
 
         geolocation = Geolocation.last
@@ -66,10 +69,9 @@ RSpec.describe RetrieveAndSaveIp do
       end
 
       it 'returns an error message' do
-        instance = RetrieveAndSaveIp.new(ip_address, address_type_ip)
+        instance = RetrieveAndSaveIp.new(ip_address, address_type_ip, http_provider)
         result = instance.send_request
 
-        # debugger
         expect(result).to eq('error: Internal Server Error, code: 500')
       end
     end

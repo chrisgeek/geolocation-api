@@ -8,7 +8,7 @@ module Auth
   def authenticate_user
     token = extract_token_from_header
     if token.nil?
-      render json: { error: 'Invalid token, please login' }, status: :unauthorized
+      render json: { error: "Invalid token, #{login_text}" }, status: :unauthorized
       return
     end
     header = request.headers['Authorization']
@@ -16,12 +16,16 @@ module Auth
     begin
       decoded = decode(header)
       @current_user = User.find(decoded[:user_id])
-    rescue ActiveRecord::RecordNotFound => e
-      render json: { error: e.message }, status: :unprocessable_entity
-    rescue JWT::DecodeError => e
-      render json: { error: e.message }, status: :unprocessable_entity
+    rescue ActiveRecord::RecordNotFound
+      render json: { error: login_text }, status: :unauthorized
+    rescue JWT::DecodeError
+      render json: { error: login_text }, status: :unprocessable_entity
     rescue JWT::ExpiredSignature
-      render json: { error: 'Token has expired' }, status: :unauthorized
+      render json: { error: login_text }, status: :unauthorized
     end
+  end
+
+  def login_text
+    'Please login or signup'
   end
 end

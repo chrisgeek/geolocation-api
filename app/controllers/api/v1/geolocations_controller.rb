@@ -14,7 +14,7 @@ module Api
       def create
         return record_exists(Geolocation, geolocation_params[:ip]) unless @geolocation.nil?
 
-        res = RetrieveAndSaveIp.call(@ip, @ip_type)
+        res = RetrieveAndSaveIp.call(@ip, @ip_type, HttpProvider::Factory.provider)
         render json: { output: res }
       end
 

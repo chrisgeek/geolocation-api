@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  web:
+    build: .
+    command: bash -c "rm -f tmp/pids/server.pid && ./bin/rails s -b '0.0.0.0'"
+    volumes:
+      - .:/rails
+      - bundle:/bundle
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    env_file:
+      - .env
+
+  db:
+    container_name: geolocation-db
+    image: postgres:latest
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    env_file:
+      - .env
+
+  test_db:
+    container_name: geolocation-test-db
+    image: postgres:latest
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_DB: geolocation_test
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 'geolocation'
+    env_file:
+      - .env
+
+volumes:
+  db_data: 
+  test_db_data:
+  bundle:
