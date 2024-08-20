@@ -11,7 +11,7 @@ RSpec.describe GeolocationProvider::Factory do
 
   describe '.provider' do
     it 'returns the default provider' do
-      expect(described_class.provider).to be_an_instance_of(GeolocationProvider::Ipstack)
+      expect(described_class.provider).to eq(GeolocationProvider::Ipstack)
     end
 
     it 'returns nil when no provider matches the id' do
@@ -22,7 +22,7 @@ RSpec.describe GeolocationProvider::Factory do
   describe '.register' do
     it 'adds a new provider to the list' do
       described_class.register('dummy_class', dummy_class)
-      expect(described_class.provider(:dummy_class)).to be_an_instance_of(dummy_class)
+      expect(described_class.provider(:dummy_class)).to eq(dummy_class)
     end
   end
 end

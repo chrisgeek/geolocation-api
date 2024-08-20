@@ -7,7 +7,6 @@ module GeolocationProvider
 
       def provider(id = nil)
         provider_class = id ? providers[id.to_sym] : providers.values.first
-        provider_class&.new
       end
 
       private

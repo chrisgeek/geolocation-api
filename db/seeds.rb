@@ -9,6 +9,11 @@
 #   end
 # db/seeds.rb
 
+puts 'Seeding User Data...'
+
+User.create!(email: 'user@example.com', password: 'password123')
+
+puts 'Seeding Geolocation Data...'
 Geolocation.create!([
   {
     ip: '134.201.250.155',
@@ -25,8 +30,8 @@ Geolocation.create!([
     longitude: -118.24368500000000
   },
   {
-    ip: '203.0.113.0',
-    ip_type: 'ipv4',
+    ip: '2001:0db8:85a3:0000:0000:8a2e:0370:7334',
+    ip_type: 'ipv6',
     continent_code: 'AS',
     continent_name: 'Asia',
     country_name: 'Japan',
@@ -53,8 +58,8 @@ Geolocation.create!([
     longitude: 13.40495400000000
   },
   {
-    ip: '198.51.100.2',
-    ip_type: 'ipv4',
+    ip: '2607:f0d0:1002:51::4',
+    ip_type: 'ipv6',
     continent_code: 'OC',
     continent_name: 'Oceania',
     country_name: 'Australia',

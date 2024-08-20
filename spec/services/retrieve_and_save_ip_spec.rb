@@ -53,8 +53,8 @@ RSpec.describe RetrieveAndSaveIp do
 
     context 'when the request is successful' do
       it 'creates a new Geolocation record' do
-        instance = RetrieveAndSaveIp.new(ip_address, address_type_ip, http_provider)
-        expect { instance.send_request }.to change(Geolocation, :count).by(1)
+        # instance = RetrieveAndSaveIp.call(ip_address, address_type_ip, http_provider)
+        expect { RetrieveAndSaveIp.call(ip_address, address_type_ip, http_provider) }.to change(Geolocation, :count).by(1)
 
         geolocation = Geolocation.last
         expect(geolocation.ip).to eq(ip_address)
@@ -69,8 +69,8 @@ RSpec.describe RetrieveAndSaveIp do
       end
 
       it 'returns an error message' do
-        instance = RetrieveAndSaveIp.new(ip_address, address_type_ip, http_provider)
-        result = instance.send_request
+        result = RetrieveAndSaveIp.call(ip_address, address_type_ip, http_provider)
+        # result = instance.send_request
 
         expect(result).to eq('error: Internal Server Error, code: 500')
       end

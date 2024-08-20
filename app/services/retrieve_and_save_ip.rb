@@ -31,7 +31,7 @@ class RetrieveAndSaveIp
   end
 
   def retrieve_geolocation_data
-    GeolocationProvider::Ipstack.make_request(address, http_provider)
+    GeolocationProvider::Factory.provider.make_request(address, http_provider)
   end
 
   def create_geolocation(geolocation_data)
